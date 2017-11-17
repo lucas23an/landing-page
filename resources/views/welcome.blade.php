@@ -19,6 +19,12 @@
                 <p class="subtitle">
                     Landing Page for Dial Host Test
                 </p>
+                <span v-if="message">
+                    @{{ message}}
+                </span>
+                <span v-for="error in errors">
+                    @{{ error[0] }}
+                </span>
                 <form>
                     {{ csrf_field() }}
                     <div class="columns">
@@ -44,7 +50,7 @@
                             <div class="field">
                                 <label class="label">Telefone Celular</label>
                                 <div class="control">
-                                    <input class="input" v-model="user.phone" type="text">
+                                    <input class="input" v-model="user.phone" v-mask="'(##) #####-####'" type="text">
                                 </div>
                             </div>
                         </div>
@@ -52,7 +58,7 @@
                             <div class="field">
                                 <label class="label">Data de Nascimento</label>
                                 <div class="control">
-                                    <input class="input" v-model="user.birthdate" type="text">
+                                    <input class="input" v-model="user.birthdate" v-mask="'##/##/####'" type="text">
                                 </div>
                             </div>
                         </div>
@@ -62,7 +68,7 @@
                             <div class="field">
                                 <label class="label">CEP</label>
                                 <div class="control">
-                                    <input class="input" v-model="user.zip_code" @change="getAddress()" type="text">
+                                    <input class="input" v-model="user.zip_code" v-mask="'#####-###'" @change="getAddress()" type="text">
                                 </div>
                             </div>
                         </div>
@@ -109,6 +115,7 @@
     </section>
     <script src="https://unpkg.com/vue@2.5.3/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-the-mask@0.11.1/dist/vue-the-mask.min.js"></script>
     <script>
         new Vue({
             el: '#app',
@@ -123,7 +130,9 @@
                     neighborhood: '',
                     uf: '',
                     city: ''
-                }
+                },
+                errors: [],
+                message: ''
             },
             methods: {
                 getAddress: function() {
@@ -140,8 +149,9 @@
 
                     this.$http.post('/save', this.user, 
                         {headers: {'X-CSRF-TOKEN': token}}).then(response => {
-                        
+                            this.message = response.body.message;
                     }, response => {
+                        this.errors = response.body.errors;
                     });
                 }
             },

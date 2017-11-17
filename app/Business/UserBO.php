@@ -31,14 +31,27 @@ class UserBO extends AbstractBO
      */
     public function store(array $attributes)
     {
-        $this->beginTransaction();
-        
-        $attributes['birthdate'] = $this->formatDateFromEn($attributes['birthdate']);
+        try {
+            $this->beginTransaction();
+            
+            $attributes['birthdate'] = $this->formatDateFromEn($attributes['birthdate']);
 
-        $newUser = $this->repository->create($attributes);
+            $newUser = $this->repository->create($attributes);
 
-        $this->commit();
+            $this->commit();
 
-        return $newUser;
+            return response()->json([
+                'message' => Messages::SUCCESS,
+                'data' => $newUser
+                ], Response::HTTP_CREATED);
+        } catch (\Exception $e) {
+            $this->rollback();
+            return response()->json([
+                'data' => [
+                    'message' => Messages::NOT_CREATED,
+                    'errors' => $e->getMessage()
+                ]
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 }

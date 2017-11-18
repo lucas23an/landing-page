@@ -34,8 +34,6 @@ class UserBO extends AbstractBO
         try {
             $this->beginTransaction();
             
-            $attributes['birthdate'] = $this->formatDateFromEn($attributes['birthdate']);
-
             $newUser = $this->repository->create($attributes);
 
             $this->commit();

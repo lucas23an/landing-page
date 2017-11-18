@@ -9,6 +9,7 @@
 
         <link href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.1/css/bulma.min.css" rel="stylesheet" type="text/css">
         <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
+        <link href="{!! asset('css/style.css') !!}" rel="stylesheet" type="text/css">
     </head>
     <body>
         <section id="app" class="section">
@@ -19,18 +20,23 @@
                 <p class="subtitle">
                     Landing Page for Dial Host Test
                 </p>
-                <span v-if="message">
+                <p>
+                    <span class="required">*</span> Campo Obrigatório
+                </p>
+                <div v-if="message" class="notification is-primary">
                     @{{ message}}
-                </span>
-                <span v-for="error in errors">
-                    @{{ error[0] }}
-                </span>
+                </div>
+                <div v-if="errors" class="notification is-danger">
+                    <div v-for="error in errors">
+                        @{{ error[0] }}
+                    </div>
+                </div>
                 <form>
                     {{ csrf_field() }}
                     <div class="columns">
                         <div class="column">
                             <div class="field">
-                                <label class="label">Nome</label>
+                                <label class="label">Nome<span class="required">*</span></label>
                                 <div class="control">
                                     <input class="input" v-model="user.name" type="text">
                                 </div>
@@ -38,7 +44,7 @@
                         </div>
                         <div class="column">
                             <div class="field">
-                                <label class="label">E-mail</label>
+                                <label class="label">E-mail<span class="required">*</span></label>
                                 <div class="control">
                                     <input class="input" v-model="user.email" type="email">
                                 </div>
@@ -48,7 +54,7 @@
                     <div class="columns">
                         <div class="column">
                             <div class="field">
-                                <label class="label">Telefone Celular</label>
+                                <label class="label">Telefone Celular<span class="required">*</span></label>
                                 <div class="control">
                                     <input class="input" v-model="user.phone" v-mask="'(##) #####-####'" type="text">
                                 </div>
@@ -56,9 +62,9 @@
                         </div>
                         <div class="column">
                             <div class="field">
-                                <label class="label">Data de Nascimento</label>
+                                <label class="label">Data de Nascimento<span class="required">*</span></label>
                                 <div class="control">
-                                    <input class="input" v-model="user.birthdate" v-mask="'##/##/####'" type="text">
+                                    <input class="input" v-model="user.birthdate" type="date">
                                 </div>
                             </div>
                         </div>
@@ -66,7 +72,7 @@
                     <div class="columns">
                         <div class="column">
                             <div class="field">
-                                <label class="label">CEP</label>
+                                <label class="label">CEP<span class="required">*</span></label>
                                 <div class="control">
                                     <input class="input" v-model="user.zip_code" v-mask="'#####-###'" @change="getAddress()" type="text">
                                 </div>
@@ -74,7 +80,7 @@
                         </div>
                         <div class="column">
                             <div class="field">
-                                <label class="label">Endereço</label>
+                                <label class="label">Endereço<span class="required">*</span></label>
                                 <div class="control">
                                     <input class="input" v-model="user.address" type="text">
                                 </div>
@@ -82,7 +88,7 @@
                         </div>
                         <div class="column">
                             <div class="field">
-                                <label class="label">Bairro</label>
+                                <label class="label">Bairro<span class="required">*</span></label>
                                 <div class="control">
                                     <input class="input" v-model="user.neighborhood" type="text">
                                 </div>
@@ -92,7 +98,7 @@
                     <div class="columns">
                         <div class="column">
                             <div class="field">
-                                <label class="label">Estado</label>
+                                <label class="label">Estado<span class="required">*</span></label>
                                 <div class="control">
                                     <input class="input" v-model="user.uf" type="text">
                                 </div>
@@ -100,7 +106,7 @@
                         </div>
                         <div class="column">
                             <div class="field">
-                                <label class="label">Cidade</label>
+                                <label class="label">Cidade<span class="required">*</span></label>
                                 <div class="control">
                                     <input class="input" v-model="user.city" type="text">
                                 </div>
@@ -131,7 +137,7 @@
                     uf: '',
                     city: ''
                 },
-                errors: [],
+                errors: '',
                 message: ''
             },
             methods: {
@@ -150,6 +156,9 @@
                     this.$http.post('/save', this.user, 
                         {headers: {'X-CSRF-TOKEN': token}}).then(response => {
                             this.message = response.body.message;
+                            setTimeout(function(){
+                                location.reload();
+                            }, 4000);
                     }, response => {
                         this.errors = response.body.errors;
                     });

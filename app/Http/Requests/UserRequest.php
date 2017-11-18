@@ -25,9 +25,9 @@ class UserRequest extends FormRequest
     {
         return [
             'name' => 'required', 
-            'email' => 'required',
+            'email' => 'required|unique:users,email',
             'phone' => 'required',
-            'birthdate' => 'required',
+            'birthdate' => 'required|date',
             'address' => 'required',
             'neighborhood' => 'required',
             'city' => 'required',
@@ -39,16 +39,17 @@ class UserRequest extends FormRequest
     public function messages()
     {
         $messages =  [
-            'name.required' => 'Campo nome é obrigatório.',
-            'email.required' => 'Campo email é obrigatório.',
-            'email.unique' => 'O email já está sendo utilizado.',
-            'phone.required' => 'Campo telefone é obrigatório.',
-            'birthdate.required' => 'Campo data de nascimento é obrigatório.',
-            'address.required' => 'Campo endereço é obrigatório.',
-            'neighborhood.required' => 'Campo Bairro é obrigatório.',
-            'city.exists' => 'Campo cidade é obrigatório.',
-            'uf.exists' => 'Campo estado é obrigatório.',
-            'zip_code.exists' => 'Campo CEP é obrigatório.'
+            'name.required' => 'O campo nome é obrigatório.',
+            'email.required' => 'O campo email é obrigatório.',
+            'email.unique' => 'O email informado já está cadastrado.',
+            'phone.required' => 'O campo telefone é obrigatório.',
+            'birthdate.required' => 'O campo data de nascimento é obrigatório.',
+            'address.required' => 'O campo endereço é obrigatório.',
+            'neighborhood.required' => 'O campo Bairro é obrigatório.',
+            'city.required' => 'O campo cidade é obrigatório.',
+            'uf.required' => 'O campo estado é obrigatório.',
+            'zip_code.required' => 'O campo CEP é obrigatório.',
+            'birthdate.date' => "O campo data de nascimento, deve ser uma data válida"
         ];
 
         return $messages;
